@@ -86,7 +86,6 @@ public class ValidatorTest {
     void testRequiredMap() {
         Validator validator = new Validator();
         MapSchema schema = validator.map();
-
         assertThat(schema.required().isValid(null)).isEqualTo(false);
         assertThat(schema.required().isValid(new HashMap<String, String>())).isEqualTo(true);
     }
@@ -96,9 +95,7 @@ public class ValidatorTest {
         Validator validator = new Validator();
         MapSchema schema = validator.map();
         Map<String, String> data = new HashMap<>();
-
         data.put("key", "value");
-
         assertThat(schema.sizeof(1).isValid(data)).isEqualTo(true);
         assertThat(schema.sizeof(2).isValid(data)).isEqualTo(false);
     }
