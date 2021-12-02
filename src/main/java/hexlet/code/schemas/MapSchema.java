@@ -13,4 +13,5 @@ public final class MapSchema extends BaseSchema {
         this.addToValidationList(x -> ((Map) x).size() == numberOfEntries);
         return this;
     }
+
 }
