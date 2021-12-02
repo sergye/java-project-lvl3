@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.schemas.MapSchema;
+import hexlet.code.schemas.BaseSchema;
 import hexlet.code.schemas.NumberSchema;
 import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.Test;
@@ -8,11 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidatorTest {
 
     @Test
-    void testRequired() {
+    void testStringRequired() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
         assertThat(schema.required().isValid("")).isEqualTo(true);
@@ -20,7 +23,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testMinLength() {
+    void testStringMinLength() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
 
@@ -33,7 +36,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testContains() {
+    void testStringContains() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
         assertThat(schema.contains("what").isValid("what does the fox say")).isEqualTo(true);
@@ -41,7 +44,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testRequiredNumber() {
+    void testNumberRequired() {
         Validator validator = new Validator();
         NumberSchema schema = validator.number();
 
@@ -53,7 +56,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testPositive() {
+    void testNumberPositive() {
         Validator validator = new Validator();
         NumberSchema schema = validator.number();
 
@@ -66,7 +69,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testRange() {
+    void testNumberRange() {
         Validator validator = new Validator();
         NumberSchema schema = validator.number();
 
@@ -91,12 +94,30 @@ public class ValidatorTest {
     }
 
     @Test
-    void testSizeof() {
+    void testSizeofMap() {
         Validator validator = new Validator();
         MapSchema schema = validator.map();
-        Map<String, String> data = new HashMap<>();
-        data.put("key", "value");
-        assertThat(schema.sizeof(1).isValid(data)).isEqualTo(true);
-        assertThat(schema.sizeof(2).isValid(data)).isEqualTo(false);
+        Map<String, String> map = new HashMap<>();
+        map.put("key", "value");
+        assertThat(schema.sizeof(1).isValid(map)).isEqualTo(true);
+        assertThat(schema.sizeof(2).isValid(map)).isEqualTo(false);
+    }
+
+    @Test
+    void testShapeMap() {
+        Validator validator = new Validator();
+        MapSchema schema = validator.map();
+        Map<String, BaseSchema> schemas = new HashMap<>();
+        schemas.put("name", validator.string().required());
+        schemas.put("age", validator.number().positive());
+        schema.shape(schemas);
+
+        final int age = 50;
+        Map<String, Object> vova = Map.of("name", "Vova", "age", age);
+        assertTrue(schema.isValid(vova));
+
+        final int negativeNumber = -20;
+        Map<String, Object> dima = Map.of("name", "Dima", "age", negativeNumber);
+        assertFalse(schema.isValid(dima));
     }
 }

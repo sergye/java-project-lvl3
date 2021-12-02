@@ -14,4 +14,17 @@ public final class MapSchema extends BaseSchema {
         return this;
     }
 
+    public MapSchema shape(Map<String, BaseSchema> schemas) {
+        this.addToValidationList(x -> isValueValid((Map<String, Object>) x, schemas));
+        return this;
+    }
+
+    private boolean isValueValid(Map<String, Object> map,  Map<String, BaseSchema> schemas) {
+        for (Map.Entry<String, Object> key : map.entrySet()) {
+            if (!schemas.get(key.getKey()).isValid(key.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
