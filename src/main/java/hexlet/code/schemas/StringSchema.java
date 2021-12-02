@@ -1,6 +1,6 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
-public final class StringSchema extends Validator {
+public final class StringSchema extends BaseSchema {
 
     public StringSchema required() {
         this.addToValidationList(x -> x instanceof String && x != null);

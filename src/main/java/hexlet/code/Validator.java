@@ -1,20 +1,12 @@
 package hexlet.code;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
+import hexlet.code.schemas.NumberSchema;
+import hexlet.code.schemas.StringSchema;
 
 public class Validator {
 
-    private List<Predicate<? super Object>> validationList = new ArrayList<>();
-
-    public final void addToValidationList(Predicate<? super Object> validation) {
-        this.validationList.add(validation);
-    }
-
-    public final  <T> boolean isValid(T t) {
-        return this.validationList.stream()
-                .allMatch(x -> x.test(t));
+    public final NumberSchema number() {
+        return new NumberSchema();
     }
 
     public final StringSchema string() {

@@ -1,12 +1,12 @@
 package hexlet.code;
 
+import hexlet.code.schemas.NumberSchema;
+import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValidatorTest {
-
-    private static final int LENGTH = 5;
 
     @Test
     void testRequired() {
@@ -20,9 +20,12 @@ public class ValidatorTest {
     void testMinLength() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
-        boolean expected = schema.minLength(LENGTH).isValid("12345");
+
+        final int length = 5;
+
+        boolean expected = schema.minLength(length).isValid("12345");
         assertThat(expected).isEqualTo(true);
-        expected = schema.minLength(LENGTH).isValid("1234");
+        expected = schema.minLength(length).isValid("1234");
         assertThat(expected).isEqualTo(false);
     }
 
@@ -34,4 +37,45 @@ public class ValidatorTest {
         assertThat(schema.contains("whatthe").isValid("what does the fox say")).isEqualTo(false);
     }
 
+    @Test
+    void testRequiredNumber() {
+        Validator validator = new Validator();
+        NumberSchema schema = validator.number();
+
+        final int value = 10;
+
+        assertThat(schema.required().isValid(null)).isEqualTo(false);
+        assertThat(schema.required().isValid(value)).isEqualTo(true);
+        assertThat(schema.required().isValid("5")).isEqualTo(false);
+    }
+
+    @Test
+    void testPositive() {
+        Validator validator = new Validator();
+        NumberSchema schema = validator.number();
+
+        final int firstValue = -10;
+        final int secondValue = 10;
+
+        assertThat(schema.positive().isValid(0)).isEqualTo(false);
+        assertThat(schema.positive().isValid(firstValue)).isEqualTo(false);
+        assertThat(schema.positive().isValid(secondValue)).isEqualTo(true);
+    }
+
+    @Test
+    void testRange() {
+        Validator validator = new Validator();
+        NumberSchema schema = validator.number();
+
+        final int start = -3;
+        final int end = 4;
+        final int firstValue = -5;
+        final int secondValue = 7;
+
+        assertThat(schema.range(start, end).isValid(start)).isEqualTo(true);
+        assertThat(schema.range(start, end).isValid(end)).isEqualTo(true);
+        assertThat(schema.range(start, end).isValid(0)).isEqualTo(true);
+        assertThat(schema.range(start, end).isValid(firstValue)).isEqualTo(false);
+        assertThat(schema.range(start, end).isValid(secondValue)).isEqualTo(false);
+    }
 }
