@@ -8,7 +8,7 @@ public final class NumberSchema extends BaseSchema {
     }
 
     public NumberSchema positive() {
-        this.addToValidationList(x -> x == null || (int) x > 0);
+        this.addToValidationList(x -> x == null || (x instanceof Integer && (Integer) x > 0));
         return this;
     }
 
