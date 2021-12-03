@@ -20,6 +20,6 @@ lint:
 	./gradlew checkstyleMain
 
 build:
-	./gradlew build
+	./gradlew clean build
 
 .PHONY: build
