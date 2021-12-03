@@ -18,8 +18,12 @@ public class ValidatorTest {
     void testStringRequired() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
-        assertThat(schema.required().isValid("")).isEqualTo(true);
-        assertThat(schema.required().isValid(null)).isEqualTo(false);
+        assertThat(schema.isValid("")).isEqualTo(true);
+        assertThat(schema.isValid(null)).isEqualTo(true);
+        schema.required();
+        assertThat(schema.isValid("")).isEqualTo(false);
+        assertThat(schema.isValid(null)).isEqualTo(false);
+        assertThat(schema.isValid("Vasya")).isEqualTo(true);
     }
 
     @Test
