@@ -10,7 +10,7 @@ public final class MapSchema extends BaseSchema {
     }
 
     public MapSchema sizeof(int numberOfEntries) {
-        this.addToValidationList(x -> ((Map) x).size() == numberOfEntries);
+        this.addToValidationList(x -> x == null || ((Map) x).size() == numberOfEntries);
         return this;
     }
 
@@ -21,7 +21,9 @@ public final class MapSchema extends BaseSchema {
 
     private boolean isValueValid(Map<String, Object> map,  Map<String, BaseSchema> schemas) {
         for (Map.Entry<String, Object> key : map.entrySet()) {
-            if (!schemas.get(key.getKey()).isValid(key.getValue())) {
+            if (!schemas.get(key
+                    .getKey())
+                    .isValid(key.getValue())) {
                 return false;
             }
         }

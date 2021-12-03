@@ -8,12 +8,12 @@ public final class NumberSchema extends BaseSchema {
     }
 
     public NumberSchema positive() {
-        this.addToValidationList(x -> (int) x > 0);
+        this.addToValidationList(x -> x == null || (int) x > 0);
         return this;
     }
 
     public NumberSchema range(int min, int max) {
-        this.addToValidationList(x -> (int) x >= min && (int) x <= max);
+        this.addToValidationList(x -> x == null || (int) x >= min && (int) x <= max);
         return this;
     }
 }
