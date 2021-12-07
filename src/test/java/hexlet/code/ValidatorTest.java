@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,12 +17,12 @@ public class ValidatorTest {
     void testStringRequired() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
-        assertThat(schema.isValid("")).isEqualTo(true);
-        assertThat(schema.isValid(null)).isEqualTo(true);
+        assertTrue(schema.isValid(""));
+        assertTrue(schema.isValid(null));
         schema.required();
-        assertThat(schema.isValid("")).isEqualTo(false);
-        assertThat(schema.isValid(null)).isEqualTo(false);
-        assertThat(schema.isValid("Vasya")).isEqualTo(true);
+        assertFalse(schema.isValid(""));
+        assertFalse(schema.isValid(null));
+        assertTrue(schema.isValid("Vasya"));
     }
 
     @Test
@@ -32,19 +31,20 @@ public class ValidatorTest {
         StringSchema schema = validator.string();
 
         final int length = 5;
+        schema.minLength(length);
 
-        boolean expected = schema.minLength(length).isValid("12345");
-        assertThat(expected).isEqualTo(true);
-        expected = schema.minLength(length).isValid("1234");
-        assertThat(expected).isEqualTo(false);
+        boolean expected = schema.isValid("12345");
+        assertTrue(expected);
+        expected = schema.isValid("1234");
+        assertFalse(expected);
     }
 
     @Test
     void testStringContains() {
         Validator validator = new Validator();
         StringSchema schema = validator.string();
-        assertThat(schema.contains("what").isValid("what does the fox say")).isEqualTo(true);
-        assertThat(schema.contains("whatthe").isValid("what does the fox say")).isEqualTo(false);
+        assertTrue(schema.contains("what").isValid("what does the fox say"));
+        assertFalse(schema.contains("whatthe").isValid("what does the fox say"));
     }
 
     @Test
@@ -54,9 +54,9 @@ public class ValidatorTest {
 
         final int value = 10;
 
-        assertThat(schema.required().isValid(null)).isEqualTo(false);
-        assertThat(schema.required().isValid(value)).isEqualTo(true);
-        assertThat(schema.required().isValid("5")).isEqualTo(false);
+        assertFalse(schema.required().isValid(null));
+        assertTrue(schema.required().isValid(value));
+        assertFalse(schema.required().isValid("5"));
     }
 
     @Test
@@ -67,9 +67,9 @@ public class ValidatorTest {
         final int firstValue = -10;
         final int secondValue = 10;
 
-        assertThat(schema.positive().isValid(0)).isEqualTo(false);
-        assertThat(schema.positive().isValid(firstValue)).isEqualTo(false);
-        assertThat(schema.positive().isValid(secondValue)).isEqualTo(true);
+        assertFalse(schema.positive().isValid(0));
+        assertFalse(schema.positive().isValid(firstValue));
+        assertTrue(schema.positive().isValid(secondValue));
     }
 
     @Test
@@ -82,19 +82,20 @@ public class ValidatorTest {
         final int firstValue = -5;
         final int secondValue = 7;
 
-        assertThat(schema.range(start, end).isValid(start)).isEqualTo(true);
-        assertThat(schema.range(start, end).isValid(end)).isEqualTo(true);
-        assertThat(schema.range(start, end).isValid(0)).isEqualTo(true);
-        assertThat(schema.range(start, end).isValid(firstValue)).isEqualTo(false);
-        assertThat(schema.range(start, end).isValid(secondValue)).isEqualTo(false);
+        assertTrue(schema.range(start, end).isValid(start));
+        assertTrue(schema.range(start, end).isValid(end));
+        assertTrue(schema.range(start, end).isValid(0));
+        assertFalse(schema.range(start, end).isValid(firstValue));
+        assertFalse(schema.range(start, end).isValid(secondValue));
     }
 
     @Test
     void testRequiredMap() {
         Validator validator = new Validator();
         MapSchema schema = validator.map();
-        assertThat(schema.required().isValid(null)).isEqualTo(false);
-        assertThat(schema.required().isValid(new HashMap<String, String>())).isEqualTo(true);
+
+        assertFalse(schema.required().isValid(null));
+        assertTrue(schema.required().isValid(new HashMap<String, String>()));
     }
 
     @Test
@@ -103,8 +104,9 @@ public class ValidatorTest {
         MapSchema schema = validator.map();
         Map<String, String> map = new HashMap<>();
         map.put("key", "value");
-        assertThat(schema.sizeof(1).isValid(map)).isEqualTo(true);
-        assertThat(schema.sizeof(2).isValid(map)).isEqualTo(false);
+
+        assertTrue(schema.sizeof(1).isValid(map));
+        assertFalse(schema.sizeof(2).isValid(map));
     }
 
     @Test
